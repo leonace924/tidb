@@ -861,3 +861,11 @@ insert into t1 value(1,1);
 insert into t2 value(1,1);
 delete t1, t2 from t1, t2 where t1.a = t2.a;
 drop table t1, t2;
+
+# Issue65454
+drop table if exists t1, t2, t3;
+create table t1 (id int, hcode varchar(10));
+create table t2 (id int, bid int, cid int);
+create table t3 (id int, user_id int);
+SELECT (SELECT COUNT(t3.user_id) FROM t2 LEFT JOIN t1 AS cm ON t2.cid = cm.id LEFT JOIN t3 ON t2.bid = t3.id WHERE cm.hcode = t1.hcode) AS tt FROM t1 WHERE t1.id IN (SELECT MIN(id) FROM t1);
+drop table t1, t2, t3;
